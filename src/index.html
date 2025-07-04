@@ -1,32 +1,2305 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" href="styles.css" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus App</title>
-        <script type="module" src="/main.js" defer></script>
-    </head>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>若木四点素材管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
 
-    <body>
-        <main class="container">
-            <h1>Welcome to PakePlus</h1>
-            <form class="row" id="greet-form">
-                <input id="inputValue" placeholder="Enter a something..." />
-            </form>
-            <div class="resultBox">
-                <span>result: </span>
-                <span id="result"></span>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            border-radius: var(--border-radius);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* 主页样式 */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #6c757d;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .cta-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #6c757d;
+        }
+
+        /* 后台管理页面样式 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 400px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-bar button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* 分类导航 - 站酷风格 */
+        .category-navigation {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            position: relative;
+        }
+
+        .primary-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .primary-category {
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .primary-category:hover {
+            background-color: #f0f2f5;
+        }
+
+        .primary-category.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .primary-category.active i {
+            color: white;
+        }
+
+        .secondary-categories {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .secondary-categories.active {
+            display: flex;
+        }
+
+        .subcategory {
+            padding: 6px 14px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: #f8f9fa;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .subcategory:hover {
+            background-color: #e9ecef;
+        }
+
+        .subcategory.active {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .subcategory.active i {
+            color: white;
+        }
+
+        .add-subcategory-btn {
+            background-color: transparent;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 16px;
+            transition: var(--transition);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .add-subcategory-btn:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        /* 内容区域 */
+        .content-area {
+            width: 100%;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .upload-btn {
+            padding: 8px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upload-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .add-tag {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-tag input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            outline: none;
+        }
+
+        .add-tag button {
+            padding: 8px 12px;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-tag button:hover {
+            opacity: 0.9;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .tag-remove:hover {
+            color: var(--danger-color);
+        }
+
+        /* 网格视图样式 */
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid-item-tags {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            max-width: calc(100% - 20px);
+        }
+
+        .grid-item-tag {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+        }
+
+        .grid-item-thumbnail {
+            height: 150px;
+            background-color: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .grid-item-thumbnail .file-icon {
+            font-size: 48px;
+            color: #6c757d;
+        }
+
+        .grid-item-content {
+            padding: 15px;
+        }
+
+        .grid-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .grid-item-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* 空状态提示 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            font-size: 60px;
+            color: #adb5bd;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .empty-state-desc {
+            color: #6c757d;
+            margin-bottom: 20px;
+            max-width: 400px;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 500px;
+            max-width: 90%;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .material-preview {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .material-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--border-radius);
+        }
+
+        .material-preview .file-icon {
+            font-size: 80px;
+            color: #6c757d;
+            margin: 20px 0;
+        }
+
+        .material-url {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--primary-color);
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .material-url:hover {
+            text-decoration: underline;
+        }
+
+        .material-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .material-tag {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .icon-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .icon-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid #ddd;
+        }
+
+        .icon-option:hover {
+            background-color: #f0f2f5;
+        }
+
+        .icon-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .icon-option i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        /* 图片上传预览 */
+        .image-preview-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--border-radius);
+            display: none;
+        }
+
+        .change-image-btn {
+            margin-top: 10px;
+            padding: 6px 12px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .change-image-btn:hover {
+            background-color: #dee2e6;
+        }
+
+        /* 新增的样式 */
+        .icon-upload-container {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .icon-preview {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 50%;
+            margin: 10px auto;
+            display: none;
+        }
+        
+        .icon-upload-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .icon-upload-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #e9ecef;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .icon-upload-btn:hover {
+            background-color: #dee2e6;
+        }
+
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 100%;
+                margin: 15px 0;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .grid-view {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .icon-selector {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .primary-categories {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .icon-selector {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .add-tag {
+                width: 100%;
+            }
+        }
+
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 上传素材类型选择器样式增强 */
+        .upload-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .type-option {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .type-option.active {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .type-option i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        
+        .type-option.active i {
+            color: var(--secondary-color);
+        }
+        
+        /* 链接预览增强 */
+        .link-preview {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .link-preview h4 {
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        
+        .link-preview img {
+            max-width: 100%;
+            max-height: 150px;
+            margin-top: 10px;
+            border-radius: var(--border-radius);
+        }
+        
+        /* 网站图标样式 */
+        .website-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: contain;
+            background-color: white;
+            padding: 5px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <a href="#" class="logo" onclick="showPage('home')">若木四点素材管理</a>
+        <div class="nav-links">
+            <a href="#" class="active" onclick="showPage('home')">首页</a>
+            <a href="#" onclick="showPage('dashboard')">素材管理</a>
+        </div>
+    </div>
+
+    <!-- 主页 -->
+    <div class="container page active" id="home-page">
+        <div class="hero">
+            <h1>欢迎使用若木四点素材管理</h1>
+            <p>一个强大的工具，帮助您整理和管理所有设计素材、网页链接和文档资料。通过分类、标签和搜索功能，快速找到您需要的资源。</p>
+            <a href="#" class="cta-button" onclick="showPage('dashboard')">开始管理素材</a>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-th-large"></i>
+                </div>
+                <h3>多种视图模式</h3>
+                <p>支持网格视图和列表视图，根据您的喜好自由切换，以最佳方式展示您的素材。</p>
             </div>
-            <div class="invokeBox">
-                <button id="openUrl">open_url_browser</button>
-                <button id="openUrlNew">open_url_new</button>
-                <button id="runCommand">run_command</button>
-                <button id="downloadFile">download_file</button>
-                <button id="getExeDir">get_exe_dir</button>
-                <button id="getEnvVar">get_env_var</button>
-                <button id="findPort">find_port</button>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h3>标签分类</h3>
+                <p>为素材添加自定义标签，通过标签快速筛选和查找相关资源。</p>
             </div>
-        </main>
-    </body>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-folder-tree"></i>
+                </div>
+                <h3>多级分类</h3>
+                <p>支持一级和二级分类结构，更有条理地组织您的素材库。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 素材管理后台 -->
+    <div class="container page" id="dashboard-page">
+        <header>
+            <div class="logo">若木四点素材管理</div>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索素材...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </header>
+
+        <!-- 分类导航栏 - 站酷风格 -->
+        <div class="category-navigation">
+            <div class="primary-categories" id="primary-categories">
+                <!-- 一级分类将通过JS动态生成 -->
+            </div>
+            
+            <div class="secondary-categories" id="secondary-categories">
+                <!-- 二级分类将通过JS动态生成 -->
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="toolbar">
+                <button class="upload-btn" id="upload-btn"><i class="fas fa-upload"></i> 上传素材</button>
+                <div class="add-tag">
+                    <input type="text" id="tag-input" placeholder="添加标签...">
+                    <button id="add-tag-btn"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="tags" id="tags-container">
+                <!-- 标签将通过JS动态生成 -->
+            </div>
+
+            <!-- 网格视图 -->
+            <div class="grid-view" id="grid-view">
+                <!-- 素材将通过JS动态生成 -->
+            </div>
+
+            <!-- 空状态提示 -->
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <div class="empty-state-icon">
+                    <i class="far fa-folder-open"></i>
+                </div>
+                <h3 class="empty-state-title">暂无素材</h3>
+                <p class="empty-state-desc">当前分类没有素材，点击上传按钮添加新素材或网页链接</p>
+                <button class="upload-btn" id="empty-upload-btn"><i class="fas fa-upload"></i> 上传素材</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加分类模态框 -->
+    <div class="modal" id="category-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-category-title">添加一级分类</h3>
+                <button class="modal-close" id="category-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="category-name">分类名称</label>
+                    <input type="text" id="category-name" placeholder="输入分类名称">
+                </div>
+                <div class="form-group" id="parent-category-group" style="display: none;">
+                    <label for="parent-category">父级分类</label>
+                    <select id="parent-category">
+                        <!-- 父级分类将通过JS动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group" id="category-icon-group">
+                    <label>选择图标</label>
+                    <div class="icon-selector" id="icon-selector">
+                        <!-- 图标选项将通过JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="category-modal-cancel">取消</button>
+                <button class="btn btn-primary" id="category-modal-confirm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 上传素材模态框 -->
+    <div class="modal" id="upload-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">上传素材</h3>
+                <button class="modal-close" id="upload-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-type-selector">
+                    <div class="type-option active" data-type="image">
+                        <i class="fas fa-image"></i>
+                        <div>图片</div>
+                    </div>
+                    <div class="type-option" data-type="web">
+                        <i class="fas fa-link"></i>
+                        <div>网页链接</div>
+                    </div>
+                    <div class="type-option" data-type="document">
+                        <i class="fas fa-file"></i>
+                        <div>文档</div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="upload-file-group">
+                    <label for="upload-file">选择文件</label>
+                    <input type="file" id="upload-file" accept="image/*">
+                    <div class="image-preview-container">
+                        <img id="upload-image-preview" class="image-preview" alt="图片预览">
+                        <button class="change-image-btn" id="change-image-btn" style="display: none;">更换图片</button>
+                    </div>
+                    
+                    <!-- 图片素材的网站超链接输入 -->
+                    <div class="form-group" id="website-url-group">
+                        <label for="website-url">关联网站超链接</label>
+                        <input type="url" id="website-url" placeholder="https://example.com">
+                    </div>
+                </div>
+                
+                <div class="form-group" id="upload-url-group" style="display: none;">
+                    <label for="upload-url">网页链接</label>
+                    <input type="url" id="upload-url" placeholder="https://example.com">
+                    
+                    <!-- 新增：网页链接的图标上传 -->
+                    <div class="icon-upload-container" id="icon-upload-container">
+                        <label class="icon-upload-label">网站显示图标</label>
+                        <input type="file" id="icon-upload" accept="image/*" style="display: none;">
+                        <div class="icon-upload-btn" id="icon-upload-btn">选择图标文件</div>
+                        <img id="icon-preview" class="icon-preview" alt="图标预览">
+                    </div>
+                    
+                    <div class="link-preview" id="link-preview" style="display: none;">
+                        <h4>链接预览</h4>
+                        <div id="preview-title">标题加载中...</div>
+                        <div id="preview-desc">描述加载中...</div>
+                        <img id="preview-image" style="display: none;">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="upload-title">标题</label>
+                    <input type="text" id="upload-title" placeholder="输入素材标题">
+                </div>
+                <div class="form-group">
+                    <label for="upload-desc">描述</label>
+                    <input type="text" id="upload-desc" placeholder="输入素材描述（可选）">
+                </div>
+                <div class="form-group">
+                    <label>分类</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="upload-category" style="flex: 1;">
+                            <!-- 分类将通过JS动态生成 -->
+                        </select>
+                        <select id="upload-subcategory" style="flex: 1;">
+                            <!-- 子分类将通过JS动态生成 -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>标签</label>
+                    <div class="tags" id="upload-tags">
+                        <!-- 标签将通过JS动态生成 -->
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="text" id="upload-new-tag" placeholder="输入新标签" style="flex: 1;">
+                        <button id="upload-add-tag" class="btn btn-secondary">添加</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="upload-modal-cancel">取消</button>
+                <button class="btn btn-primary" id="upload-modal-confirm">上传</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 素材详情模态框 -->
+    <div class="modal" id="detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="detail-title">素材详情</h3>
+                <button class="modal-close" id="detail-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="material-preview" id="detail-preview">
+                    <!-- 预览内容将通过JS动态生成 -->
+                </div>
+                <div class="form-group">
+                    <label for="detail-title-input">标题</label>
+                    <input type="text" id="detail-title-input">
+                </div>
+                <div class="form-group">
+                    <label for="detail-desc">描述</label>
+                    <input type="text" id="detail-desc">
+                </div>
+                
+                <!-- 图片素材的网站超链接显示 -->
+                <div class="form-group" id="detail-website-url-group" style="display: none;">
+                    <label>关联网站超链接</label>
+                    <a href="#" target="_blank" class="material-url" id="detail-website-url"></a>
+                </div>
+                
+                <div class="form-group" id="detail-url-group" style="display: none;">
+                    <label>网页链接</label>
+                    <a href="#" target="_blank" class="material-url" id="detail-url"></a>
+                </div>
+                
+                <!-- 新增：网页链接的图标显示 -->
+                <div class="form-group" id="detail-icon-group" style="display: none;">
+                    <label>网站显示图标</label>
+                    <img id="detail-icon-preview" class="website-icon" alt="图标预览">
+                </div>
+                
+                <div class="form-group">
+                    <label>分类</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="detail-category" style="flex: 1;">
+                            <!-- 分类将通过JS动态生成 -->
+                        </select>
+                        <select id="detail-subcategory" style="flex: 1;">
+                            <!-- 子分类将通过JS动态生成 -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>标签</label>
+                    <div class="material-tags" id="detail-tags">
+                        <!-- 标签将通过JS动态生成 -->
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="text" id="detail-new-tag" placeholder="输入新标签" style="flex: 1;">
+                        <button id="detail-add-tag" class="btn btn-secondary">添加</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="detail-notes">备注</label>
+                    <textarea id="detail-notes" placeholder="添加备注信息..."></textarea>
+                </div>
+                <div class="form-group" id="detail-image-upload" style="display: none;">
+                    <label>更换图片</label>
+                    <input type="file" id="detail-new-image" accept="image/*">
+                    <div class="image-preview-container">
+                        <img id="detail-image-preview" class="image-preview" alt="新图片预览">
+                    </div>
+                </div>
+                
+                <!-- 新增：网页链接的图标更换 -->
+                <div class="form-group" id="detail-icon-upload" style="display: none;">
+                    <label>更换网站图标</label>
+                    <input type="file" id="detail-new-icon" accept="image/*">
+                    <div class="image-preview-container">
+                        <img id="detail-new-icon-preview" class="image-preview" alt="新图标预览">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="detail-delete-btn">删除</button>
+                <button class="btn btn-secondary" id="detail-cancel-btn">取消</button>
+                <button class="btn btn-primary" id="detail-save-btn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始数据
+        let categories = [
+            { id: 'cat1', name: '设计素材', icon: 'fas fa-palette', subcategories: [
+                { id: 'sub1', name: 'UI组件', icon: 'fas fa-cubes' },
+                { id: 'sub2', name: '图标', icon: 'fas fa-icons' },
+                { id: 'sub3', name: '背景图', icon: 'fas fa-image' }
+            ]},
+            { id: 'cat2', name: 'AI工具', icon: 'fas fa-robot', subcategories: [
+                { id: 'sub4', name: '图像生成', icon: 'fas fa-magic' },
+                { id: 'sub5', name: '文本处理', icon: 'fas fa-font' }
+            ]},
+            { id: 'cat3', name: '文档资料', icon: 'fas fa-file-alt', subcategories: []}
+        ];
+
+        let materials = [
+            { id: 'mat1', title: '精美插画集', desc: '一组高质量的插画素材', type: 'image', category: 'cat1', subcategory: 'sub1', tags: ['插画', '艺术'], date: '2023-05-15', thumbnail: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=300&q=80', notes: '', websiteUrl: 'https://example.com/illustrations' },
+            { id: 'mat2', title: 'Midjourney提示词', desc: 'AI绘画提示词大全', type: 'document', category: 'cat2', subcategory: 'sub4', tags: ['AI', '提示词'], date: '2023-06-20', thumbnail: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=300&q=80', notes: '' },
+            { id: 'mat3', title: 'ChatGPT官网', desc: 'OpenAI官方聊天机器人', type: 'web', category: 'cat2', subcategory: 'sub5', tags: ['AI', '聊天'], date: '2023-04-10', url: 'https://chat.openai.com', thumbnail: 'https://images.unsplash.com/photo-1679678691328-54929d271c3f?auto=format&fit=crop&w=300&q=80', notes: '', iconUrl: 'https://cdn-icons-png.flaticon.com/512/5968/5968871.png' },
+            { id: 'mat4', title: '图标素材包', desc: '500+扁平化图标', type: 'image', category: 'cat1', subcategory: 'sub2', tags: ['图标', 'UI'], date: '2023-07-01', thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80', notes: '', websiteUrl: 'https://example.com/icons' },
+            { id: 'mat5', title: '渐变背景', desc: '多种渐变色彩背景', type: 'image', category: 'cat1', subcategory: 'sub3', tags: ['背景', '渐变'], date: '2023-05-28', thumbnail: 'https://images.unsplash.com/photo-1505506874110-6a7a69069a08?auto=format&fit=crop&w=300&q=80', notes: '', websiteUrl: 'https://example.com/gradients' }
+        ];
+
+        let tags = ['插画', '艺术', 'AI', '提示词', '聊天', '图标', 'UI', '背景', '渐变'];
+        let selectedCategory = null;
+        let selectedSubcategory = null;
+        let selectedTags = [];
+        let searchQuery = '';
+        let currentMaterialId = null;
+        let newImageFile = null;
+        let newIconFile = null;
+
+        // 图标选项
+        const iconOptions = [
+            'fas fa-palette', 'fas fa-image', 'fas fa-icons', 'fas fa-cubes', 'fas fa-robot',
+            'fas fa-magic', 'fas fa-font', 'fas fa-file-alt', 'fas fa-globe', 'fas fa-link',
+            'fas fa-folder', 'fas fa-tags', 'fas fa-layer-group', 'fas fa-object-group', 'fas fa-photo-video',
+            'fas fa-paint-brush', 'fas fa-vector-square', 'fas fa-draw-polygon', 'fas fa-sliders-h', 'fas fa-crop'
+        ];
+
+        // DOM元素
+        const homePage = document.getElementById('home-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const primaryCategoriesEl = document.getElementById('primary-categories');
+        const secondaryCategoriesEl = document.getElementById('secondary-categories');
+        const gridViewEl = document.getElementById('grid-view');
+        const emptyStateEl = document.getElementById('empty-state');
+        const tagsContainerEl = document.getElementById('tags-container');
+        const tagInputEl = document.getElementById('tag-input');
+        const addTagBtn = document.getElementById('add-tag-btn');
+        const searchInput = document.querySelector('.search-bar input');
+        const searchBtn = document.querySelector('.search-bar button');
+        const uploadBtn = document.getElementById('upload-btn');
+        const emptyUploadBtn = document.getElementById('empty-upload-btn');
+        const addCategoryBtn = document.getElementById('add-category-btn');
+
+        // 模态框相关元素
+        const categoryModal = document.getElementById('category-modal');
+        const uploadModal = document.getElementById('upload-modal');
+        const detailModal = document.getElementById('detail-modal');
+        const modalCategoryTitle = document.getElementById('modal-category-title');
+        const categoryNameInput = document.getElementById('category-name');
+        const parentCategoryGroup = document.getElementById('parent-category-group');
+        const parentCategorySelect = document.getElementById('parent-category');
+        const iconSelectorEl = document.getElementById('icon-selector');
+        const categoryModalConfirm = document.getElementById('category-modal-confirm');
+        const categoryModalCancel = document.getElementById('category-modal-cancel');
+        const categoryModalClose = document.getElementById('category-modal-close');
+        const uploadModalClose = document.getElementById('upload-modal-close');
+        const uploadModalCancel = document.getElementById('upload-modal-cancel');
+        const uploadModalConfirm = document.getElementById('upload-modal-confirm');
+        const uploadTypeOptions = document.querySelectorAll('.type-option');
+        const uploadFileGroup = document.getElementById('upload-file-group');
+        const uploadUrlGroup = document.getElementById('upload-url-group');
+        const uploadCategorySelect = document.getElementById('upload-category');
+        const uploadSubcategorySelect = document.getElementById('upload-subcategory');
+        const uploadTagsEl = document.getElementById('upload-tags');
+        const uploadNewTagInput = document.getElementById('upload-new-tag');
+        const uploadAddTagBtn = document.getElementById('upload-add-tag');
+        const uploadFileInput = document.getElementById('upload-file');
+        const uploadImagePreview = document.getElementById('upload-image-preview');
+        const changeImageBtn = document.getElementById('change-image-btn');
+        const uploadUrlInput = document.getElementById('upload-url');
+        const linkPreviewEl = document.getElementById('link-preview');
+        const previewTitle = document.getElementById('preview-title');
+        const previewDesc = document.getElementById('preview-desc');
+        const previewImage = document.getElementById('preview-image');
+        const detailModalClose = document.getElementById('detail-modal-close');
+        const detailCancelBtn = document.getElementById('detail-cancel-btn');
+        const detailSaveBtn = document.getElementById('detail-save-btn');
+        const detailDeleteBtn = document.getElementById('detail-delete-btn');
+        const detailTitleEl = document.getElementById('detail-title');
+        const detailPreviewEl = document.getElementById('detail-preview');
+        const detailTitleInput = document.getElementById('detail-title-input');
+        const detailDescInput = document.getElementById('detail-desc');
+        const detailUrlEl = document.getElementById('detail-url');
+        const detailUrlGroup = document.getElementById('detail-url-group');
+        const detailCategorySelect = document.getElementById('detail-category');
+        const detailSubcategorySelect = document.getElementById('detail-subcategory');
+        const detailTagsEl = document.getElementById('detail-tags');
+        const detailNewTagInput = document.getElementById('detail-new-tag');
+        const detailAddTagBtn = document.getElementById('detail-add-tag');
+        const detailNotesInput = document.getElementById('detail-notes');
+        const detailImageUpload = document.getElementById('detail-image-upload');
+        const detailNewImageInput = document.getElementById('detail-new-image');
+        const detailImagePreview = document.getElementById('detail-image-preview');
+        const detailWebsiteUrlGroup = document.getElementById('detail-website-url-group');
+        const detailWebsiteUrl = document.getElementById('detail-website-url');
+        const detailIconGroup = document.getElementById('detail-icon-group');
+        const detailIconPreview = document.getElementById('detail-icon-preview');
+        const detailIconUpload = document.getElementById('detail-icon-upload');
+        const detailNewIconInput = document.getElementById('detail-new-icon');
+        const detailNewIconPreview = document.getElementById('detail-new-icon-preview');
+
+        // 新增元素
+        const websiteUrlInput = document.getElementById('website-url');
+        const iconUploadBtn = document.getElementById('icon-upload-btn');
+        const iconUploadInput = document.getElementById('icon-upload');
+        const iconPreview = document.getElementById('icon-preview');
+
+        // 当前操作状态
+        let currentAction = 'add-category'; // 'add-category' 或 'add-subcategory'
+        let editingCategoryId = null;
+        let selectedIcon = 'fas fa-folder';
+
+        // 初始化页面
+        function init() {
+            renderCategories();
+            renderMaterials();
+            renderTags();
+            renderIconOptions();
+            setupEventListeners();
+            checkEmptyState();
+        }
+
+        // 显示页面
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(`${pageId}-page`).classList.add('active');
+            
+            // 更新导航栏活动状态
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (pageId === 'home') {
+                document.querySelector('.nav-links a:first-child').classList.add('active');
+            } else {
+                document.querySelector('.nav-links a:last-child').classList.add('active');
+            }
+        }
+
+        // 渲染分类列表（新设计）
+        function renderCategories() {
+            primaryCategoriesEl.innerHTML = '';
+            secondaryCategoriesEl.innerHTML = '';
+            
+            // 渲染一级分类
+            categories.forEach(category => {
+                const categoryItem = document.createElement('div');
+                categoryItem.className = `primary-category ${selectedCategory === category.id ? 'active' : ''}`;
+                categoryItem.dataset.id = category.id;
+                categoryItem.innerHTML = `
+                    <i class="${category.icon}"></i>
+                    <span>${category.name}</span>
+                `;
+                primaryCategoriesEl.appendChild(categoryItem);
+            });
+            
+            // 添加一级分类按钮
+            const addCategoryBtn = document.createElement('div');
+            addCategoryBtn.className = 'primary-category add-category';
+            addCategoryBtn.innerHTML = '<i class="fas fa-plus"></i> 添加分类';
+            primaryCategoriesEl.appendChild(addCategoryBtn);
+            
+            // 渲染二级分类（如果有一级分类被选中）
+            if (selectedCategory) {
+                const category = categories.find(c => c.id === selectedCategory);
+                if (category) {
+                    secondaryCategoriesEl.classList.add('active');
+                    
+                    category.subcategories.forEach(subcategory => {
+                        const subcategoryItem = document.createElement('div');
+                        subcategoryItem.className = `subcategory ${selectedSubcategory === subcategory.id ? 'active' : ''}`;
+                        subcategoryItem.dataset.id = subcategory.id;
+                        subcategoryItem.innerHTML = `
+                            <i class="${subcategory.icon}"></i>
+                            <span>${subcategory.name}</span>
+                        `;
+                        secondaryCategoriesEl.appendChild(subcategoryItem);
+                    });
+                    
+                    // 添加子分类按钮
+                    const addSubcategoryBtn = document.createElement('button');
+                    addSubcategoryBtn.className = 'add-subcategory-btn';
+                    addSubcategoryBtn.innerHTML = '<i class="fas fa-plus"></i> 添加子分类';
+                    addSubcategoryBtn.dataset.parentId = selectedCategory;
+                    secondaryCategoriesEl.appendChild(addSubcategoryBtn);
+                }
+            }
+            
+            // 更新上传和详情模态框中的分类选择
+            updateCategorySelects();
+        }
+
+        // 更新分类选择器
+        function updateCategorySelects() {
+            // 上传模态框
+            uploadCategorySelect.innerHTML = '';
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                if (category.id === selectedCategory) {
+                    option.selected = true;
+                }
+                uploadCategorySelect.appendChild(option);
+            });
+            
+            updateSubcategorySelect(uploadCategorySelect, uploadSubcategorySelect, selectedSubcategory);
+            
+            // 详情模态框
+            detailCategorySelect.innerHTML = '';
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                detailCategorySelect.appendChild(option);
+            });
+            
+            // 监听分类变化
+            uploadCategorySelect.addEventListener('change', () => {
+                updateSubcategorySelect(uploadCategorySelect, uploadSubcategorySelect);
+            });
+            
+            detailCategorySelect.addEventListener('change', () => {
+                updateSubcategorySelect(detailCategorySelect, detailSubcategorySelect);
+            });
+        }
+        
+        // 更新子分类选择器
+        function updateSubcategorySelect(categorySelect, subcategorySelect, selectedId = null) {
+            const categoryId = categorySelect.value;
+            const category = categories.find(c => c.id === categoryId);
+            
+            subcategorySelect.innerHTML = '';
+            if (category && category.subcategories.length > 0) {
+                category.subcategories.forEach(subcategory => {
+                    const option = document.createElement('option');
+                    option.value = subcategory.id;
+                    option.textContent = subcategory.name;
+                    if (subcategory.id === selectedId) {
+                        option.selected = true;
+                    }
+                    subcategorySelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = '无子分类';
+                subcategorySelect.appendChild(option);
+            }
+        }
+
+        // 渲染素材
+        function renderMaterials() {
+            gridViewEl.innerHTML = '';
+            
+            const filteredMaterials = filterMaterials();
+            
+            if (filteredMaterials.length === 0) {
+                emptyStateEl.style.display = 'flex';
+                gridViewEl.style.display = 'none';
+                return;
+            } else {
+                emptyStateEl.style.display = 'none';
+                gridViewEl.style.display = 'grid';
+            }
+            
+            filteredMaterials.forEach(material => {
+                // 网格视图项
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item fade-in';
+                gridItem.dataset.id = material.id;
+                
+                let thumbnailContent = '';
+                if (material.type === 'image') {
+                    thumbnailContent = `<img src="${material.thumbnail}" alt="${material.title}">`;
+                } else if (material.type === 'web') {
+                    if (material.iconUrl) {
+                        // 使用上传的网站图标
+                        thumbnailContent = `<img src="${material.iconUrl}" alt="${material.title}" class="website-icon">`;
+                    } else {
+                        thumbnailContent = '<i class="fas fa-globe file-icon"></i>';
+                    }
+                } else {
+                    thumbnailContent = '<i class="fas fa-file-alt file-icon"></i>';
+                }
+                
+                // 标签显示
+                let tagsHtml = '';
+                if (material.tags && material.tags.length > 0) {
+                    tagsHtml = material.tags.map(tag => `<span class="grid-item-tag">${tag}</span>`).join('');
+                }
+                
+                gridItem.innerHTML = `
+                    <div class="grid-item-tags">${tagsHtml}</div>
+                    <div class="grid-item-thumbnail">
+                        ${thumbnailContent}
+                    </div>
+                    <div class="grid-item-content">
+                        <div class="grid-item-title">${material.title}</div>
+                        <div class="grid-item-meta">
+                            <span>${material.date}</span>
+                            <span>${getCategoryName(material.category)}/${getSubcategoryName(material.category, material.subcategory)}</span>
+                        </div>
+                    </div>
+                `;
+                gridViewEl.appendChild(gridItem);
+            });
+        }
+
+        // 过滤素材
+        function filterMaterials() {
+            return materials.filter(material => {
+                // 按分类筛选
+                if (selectedCategory && material.category !== selectedCategory) return false;
+                if (selectedSubcategory && material.subcategory !== selectedSubcategory) return false;
+                
+                // 按标签筛选
+                if (selectedTags.length > 0 && !selectedTags.some(tag => material.tags.includes(tag))) return false;
+                
+                // 按搜索词筛选
+                if (searchQuery && !material.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
+                    !material.desc.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                    !(material.tags && material.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))) return false;
+                
+                return true;
+            });
+        }
+
+        // 渲染标签
+        function renderTags() {
+            tagsContainerEl.innerHTML = '';
+            
+            tags.forEach(tag => {
+                const tagEl = document.createElement('div');
+                tagEl.className = `tag ${selectedTags.includes(tag) ? 'active' : ''}`;
+                tagEl.dataset.tag = tag;
+                tagEl.innerHTML = `
+                    ${tag}
+                    <span class="tag-remove"><i class="fas fa-times"></i></span>
+                `;
+                tagsContainerEl.appendChild(tagEl);
+            });
+            
+            // 更新上传和详情模态框中的标签
+            renderUploadTags();
+            if (currentMaterialId) {
+                renderDetailTags();
+            }
+        }
+        
+        // 渲染上传模态框中的标签
+        function renderUploadTags() {
+            uploadTagsEl.innerHTML = '';
+            
+            selectedTags.forEach(tag => {
+                const tagEl = document.createElement('div');
+                tagEl.className = 'tag';
+                tagEl.dataset.tag = tag;
+                tagEl.innerHTML = `
+                    ${tag}
+                    <span class="tag-remove"><i class="fas fa-times"></i></span>
+                `;
+                uploadTagsEl.appendChild(tagEl);
+            });
+        }
+        
+        // 渲染详情模态框中的标签
+        function renderDetailTags() {
+            detailTagsEl.innerHTML = '';
+            const material = materials.find(m => m.id === currentMaterialId);
+            if (!material || !material.tags) return;
+            
+            material.tags.forEach(tag => {
+                const tagEl = document.createElement('div');
+                tagEl.className = 'material-tag';
+                tagEl.dataset.tag = tag;
+                tagEl.innerHTML = `
+                    ${tag}
+                    <span class="tag-remove"><i class="fas fa-times"></i></span>
+                `;
+                detailTagsEl.appendChild(tagEl);
+            });
+        }
+
+        // 渲染图标选项
+        function renderIconOptions() {
+            iconSelectorEl.innerHTML = '';
+            
+            iconOptions.forEach(icon => {
+                const iconOption = document.createElement('div');
+                iconOption.className = `icon-option ${icon === selectedIcon ? 'selected' : ''}`;
+                iconOption.dataset.icon = icon;
+                iconOption.innerHTML = `
+                    <i class="${icon}"></i>
+                    <small>${icon.replace('fas fa-', '')}</small>
+                `;
+                iconSelectorEl.appendChild(iconOption);
+            });
+        }
+
+        // 获取分类名称
+        function getCategoryName(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            return category ? category.name : '未分类';
+        }
+
+        // 获取子分类名称
+        function getSubcategoryName(categoryId, subcategoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return '未分类';
+            
+            const subcategory = category.subcategories.find(s => s.id === subcategoryId);
+            return subcategory ? subcategory.name : '未分类';
+        }
+
+        // 检查空状态
+        function checkEmptyState() {
+            const filteredMaterials = filterMaterials();
+            if (filteredMaterials.length === 0) {
+                emptyStateEl.style.display = 'flex';
+                gridViewEl.style.display = 'none';
+            } else {
+                emptyStateEl.style.display = 'none';
+                gridViewEl.style.display = 'grid';
+            }
+        }
+
+        // 打开素材详情
+        function openMaterialDetail(materialId) {
+            const material = materials.find(m => m.id === materialId);
+            if (!material) return;
+            
+            currentMaterialId = materialId;
+            detailTitleEl.textContent = material.title;
+            detailTitleInput.value = material.title;
+            detailDescInput.value = material.desc;
+            detailNotesInput.value = material.notes || '';
+            newImageFile = null;
+            newIconFile = null;
+            
+            // 设置分类选择
+            detailCategorySelect.value = material.category;
+            updateSubcategorySelect(detailCategorySelect, detailSubcategorySelect, material.subcategory);
+            
+            // 渲染标签
+            renderDetailTags();
+            
+            // 预览内容
+            detailPreviewEl.innerHTML = '';
+            if (material.type === 'image') {
+                detailPreviewEl.innerHTML = `
+                    <img src="${material.thumbnail}" alt="${material.title}">
+                `;
+                detailUrlGroup.style.display = 'none';
+                detailImageUpload.style.display = 'block';
+                detailImagePreview.style.display = 'none';
+                
+                // 显示网站链接
+                if (material.websiteUrl) {
+                    detailWebsiteUrl.href = material.websiteUrl;
+                    detailWebsiteUrl.textContent = material.websiteUrl;
+                    detailWebsiteUrlGroup.style.display = 'block';
+                } else {
+                    detailWebsiteUrlGroup.style.display = 'none';
+                }
+                detailIconGroup.style.display = 'none';
+                detailIconUpload.style.display = 'none';
+            } else if (material.type === 'web') {
+                detailPreviewEl.innerHTML = `
+                    ${material.iconUrl ? `<img src="${material.iconUrl}" alt="${material.title}" class="website-icon">` : '<i class="fas fa-globe file-icon"></i>'}
+                `;
+                detailUrlEl.textContent = material.url;
+                detailUrlEl.href = material.url;
+                detailUrlGroup.style.display = 'block';
+                detailImageUpload.style.display = 'none';
+                detailWebsiteUrlGroup.style.display = 'none';
+                
+                // 显示网站图标
+                if (material.iconUrl) {
+                    detailIconPreview.src = material.iconUrl;
+                    detailIconGroup.style.display = 'block';
+                    detailIconUpload.style.display = 'block';
+                } else {
+                    detailIconGroup.style.display = 'none';
+                    detailIconUpload.style.display = 'none';
+                }
+            } else {
+                detailPreviewEl.innerHTML = `
+                    <i class="fas fa-file-alt file-icon"></i>
+                `;
+                detailUrlGroup.style.display = 'none';
+                detailImageUpload.style.display = 'none';
+                detailWebsiteUrlGroup.style.display = 'none';
+                detailIconGroup.style.display = 'none';
+                detailIconUpload.style.display = 'none';
+            }
+            
+            detailModal.style.display = 'flex';
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 分类点击事件
+            primaryCategoriesEl.addEventListener('click', (e) => {
+                const primaryCategory = e.target.closest('.primary-category:not(.add-category)');
+                const addCategoryBtn = e.target.closest('.add-category');
+                
+                if (primaryCategory) {
+                    const categoryId = primaryCategory.dataset.id;
+                    
+                    if (selectedCategory === categoryId) {
+                        selectedCategory = null;
+                        selectedSubcategory = null;
+                    } else {
+                        selectedCategory = categoryId;
+                        selectedSubcategory = null;
+                    }
+                    
+                    renderCategories();
+                    renderMaterials();
+                } else if (addCategoryBtn) {
+                    currentAction = 'add-category';
+                    modalCategoryTitle.textContent = '添加一级分类';
+                    parentCategoryGroup.style.display = 'none';
+                    categoryNameInput.value = '';
+                    editingCategoryId = null;
+                    selectedIcon = 'fas fa-folder';
+                    renderIconOptions();
+                    categoryModal.style.display = 'flex';
+                }
+            });
+            
+            // 二级分类点击事件
+            secondaryCategoriesEl.addEventListener('click', (e) => {
+                const subcategory = e.target.closest('.subcategory');
+                const addSubcategoryBtn = e.target.closest('.add-subcategory-btn');
+                
+                if (subcategory) {
+                    const subcategoryId = subcategory.dataset.id;
+                    selectedSubcategory = selectedSubcategory === subcategoryId ? null : subcategoryId;
+                    renderCategories();
+                    renderMaterials();
+                } else if (addSubcategoryBtn) {
+                    currentAction = 'add-subcategory';
+                    modalCategoryTitle.textContent = '添加子分类';
+                    parentCategoryGroup.style.display = 'block';
+                    categoryNameInput.value = '';
+                    editingCategoryId = addSubcategoryBtn.dataset.parentId;
+                    selectedIcon = 'fas fa-folder';
+                    renderIconOptions();
+                    
+                    // 填充父级分类选择
+                    parentCategorySelect.innerHTML = '';
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.name;
+                        if (category.id === editingCategoryId) {
+                            option.selected = true;
+                        }
+                        parentCategorySelect.appendChild(option);
+                    });
+                    
+                    categoryModal.style.display = 'flex';
+                }
+            });
+            
+            // 图标选择
+            iconSelectorEl.addEventListener('click', (e) => {
+                const iconOption = e.target.closest('.icon-option');
+                if (iconOption) {
+                    selectedIcon = iconOption.dataset.icon;
+                    document.querySelectorAll('.icon-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    iconOption.classList.add('selected');
+                }
+            });
+            
+            // 素材类型选择器
+            uploadTypeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const type = option.dataset.type;
+                    
+                    // 移除所有选项的活动状态
+                    uploadTypeOptions.forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    
+                    // 设置当前选项为活动状态
+                    option.classList.add('active');
+                    
+                    // 根据类型显示/隐藏表单区域
+                    if (type === 'web') {
+                        uploadFileGroup.style.display = 'none';
+                        uploadUrlGroup.style.display = 'block';
+                    } else {
+                        uploadFileGroup.style.display = 'block';
+                        uploadUrlGroup.style.display = 'none';
+                        linkPreviewEl.style.display = 'none';
+                    }
+                });
+            });
+            
+            // 链接预览功能
+            uploadUrlInput.addEventListener('blur', () => {
+                const url = uploadUrlInput.value.trim();
+                if (url) {
+                    // 模拟API调用获取链接预览信息
+                    previewTitle.textContent = "示例网站标题";
+                    previewDesc.textContent = "这是一个示例网站描述，实际应用中会从链接中获取真实数据";
+                    previewImage.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80";
+                    previewImage.style.display = 'block';
+                    linkPreviewEl.style.display = 'block';
+                    
+                    // 设置标题和描述字段
+                    document.getElementById('upload-title').value = "示例网站标题";
+                    document.getElementById('upload-desc').value = "这是一个示例网站描述";
+                } else {
+                    linkPreviewEl.style.display = 'none';
+                }
+            });
+            
+            // 标签点击事件
+            tagsContainerEl.addEventListener('click', (e) => {
+                const tagRemoveBtn = e.target.closest('.tag-remove');
+                const tagEl = e.target.closest('.tag');
+                
+                if (tagRemoveBtn) {
+                    e.stopPropagation();
+                    const tag = tagEl.dataset.tag;
+                    tags = tags.filter(t => t !== tag);
+                    selectedTags = selectedTags.filter(t => t !== tag);
+                    renderTags();
+                    renderMaterials();
+                } else if (tagEl) {
+                    const tag = tagEl.dataset.tag;
+                    if (selectedTags.includes(tag)) {
+                        selectedTags = selectedTags.filter(t => t !== tag);
+                    } else {
+                        selectedTags.push(tag);
+                    }
+                    renderTags();
+                    renderMaterials();
+                }
+            });
+            
+            // 上传模态框标签点击事件
+            uploadTagsEl.addEventListener('click', (e) => {
+                const tagRemoveBtn = e.target.closest('.tag-remove');
+                if (tagRemoveBtn) {
+                    e.stopPropagation();
+                    const tagEl = tagRemoveBtn.closest('.tag');
+                    const tag = tagEl.dataset.tag;
+                    selectedTags = selectedTags.filter(t => t !== tag);
+                    renderUploadTags();
+                }
+            });
+            
+            // 详情模态框标签点击事件
+            detailTagsEl.addEventListener('click', (e) => {
+                const tagRemoveBtn = e.target.closest('.tag-remove');
+                if (tagRemoveBtn) {
+                    e.stopPropagation();
+                    const tagEl = tagRemoveBtn.closest('.material-tag');
+                    const tag = tagEl.dataset.tag;
+                    const material = materials.find(m => m.id === currentMaterialId);
+                    if (material) {
+                        material.tags = material.tags.filter(t => t !== tag);
+                        renderDetailTags();
+                    }
+                }
+            });
+            
+            // 添加标签
+            addTagBtn.addEventListener('click', () => {
+                const newTag = tagInputEl.value.trim();
+                if (newTag && !tags.includes(newTag)) {
+                    tags.push(newTag);
+                    tagInputEl.value = '';
+                    renderTags();
+                }
+            });
+            
+            tagInputEl.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addTagBtn.click();
+                }
+            });
+            
+            // 上传模态框添加标签
+            uploadAddTagBtn.addEventListener('click', () => {
+                const newTag = uploadNewTagInput.value.trim();
+                if (newTag && !selectedTags.includes(newTag)) {
+                    if (!tags.includes(newTag)) {
+                        tags.push(newTag);
+                    }
+                    selectedTags.push(newTag);
+                    uploadNewTagInput.value = '';
+                    renderTags();
+                }
+            });
+            
+            uploadNewTagInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    uploadAddTagBtn.click();
+                }
+            });
+            
+            // 详情模态框添加标签
+            detailAddTagBtn.addEventListener('click', () => {
+                const newTag = detailNewTagInput.value.trim();
+                const material = materials.find(m => m.id === currentMaterialId);
+                if (newTag && material) {
+                    if (!material.tags) material.tags = [];
+                    if (!material.tags.includes(newTag)) {
+                        material.tags.push(newTag);
+                        if (!tags.includes(newTag)) {
+                            tags.push(newTag);
+                            renderTags();
+                        }
+                        renderDetailTags();
+                        detailNewTagInput.value = '';
+                    }
+                }
+            });
+            
+            detailNewTagInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    detailAddTagBtn.click();
+                }
+            });
+            
+            // 搜索
+            searchBtn.addEventListener('click', () => {
+                searchQuery = searchInput.value;
+                renderMaterials();
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchQuery = searchInput.value;
+                    renderMaterials();
+                }
+            });
+            
+            // 上传按钮
+            uploadBtn.addEventListener('click', openUploadModal);
+            emptyUploadBtn.addEventListener('click', openUploadModal);
+            
+            // 图片上传预览
+            uploadFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        uploadImagePreview.src = event.target.result;
+                        uploadImagePreview.style.display = 'block';
+                        changeImageBtn.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            changeImageBtn.addEventListener('click', () => {
+                uploadFileInput.value = '';
+                uploadImagePreview.src = '';
+                uploadImagePreview.style.display = 'none';
+                changeImageBtn.style.display = 'none';
+            });
+            
+            // 详情模态框图片更换
+            detailNewImageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    newImageFile = file;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        detailImagePreview.src = event.target.result;
+                        detailImagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 新增：图标上传预览
+            iconUploadBtn.addEventListener('click', () => {
+                iconUploadInput.click();
+            });
+            
+            iconUploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        iconPreview.src = event.target.result;
+                        iconPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 详情模态框图标更换
+            detailNewIconInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    newIconFile = file;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        detailNewIconPreview.src = event.target.result;
+                        detailNewIconPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 分类模态框
+            categoryModalConfirm.addEventListener('click', () => {
+                const name = categoryNameInput.value.trim();
+                if (!name) return;
+                
+                if (currentAction === 'add-category') {
+                    // 添加一级分类
+                    const newCategory = {
+                        id: 'cat' + Date.now(),
+                        name: name,
+                        icon: selectedIcon,
+                        subcategories: []
+                    };
+                    categories.push(newCategory);
+                } else {
+                    // 添加子分类
+                    const parentId = parentCategorySelect.value;
+                    const parentCategory = categories.find(c => c.id === parentId);
+                    if (parentCategory) {
+                        parentCategory.subcategories.push({
+                            id: 'sub' + Date.now(),
+                            name: name,
+                            icon: selectedIcon
+                        });
+                    }
+                }
+                
+                renderCategories();
+                categoryModal.style.display = 'none';
+            });
+            
+            categoryModalCancel.addEventListener('click', () => {
+                categoryModal.style.display = 'none';
+            });
+            
+            categoryModalClose.addEventListener('click', () => {
+                categoryModal.style.display = 'none';
+            });
+            
+            // 上传模态框
+            uploadModalConfirm.addEventListener('click', () => {
+                const activeType = document.querySelector('.type-option.active').dataset.type;
+                const title = document.getElementById('upload-title').value.trim();
+                const desc = document.getElementById('upload-desc').value.trim();
+                
+                if (!title) return;
+                
+                let newMaterial = {
+                    id: 'mat' + Date.now(),
+                    title: title,
+                    desc: desc || '无描述',
+                    type: activeType,
+                    category: uploadCategorySelect.value,
+                    subcategory: uploadSubcategorySelect.value === '' ? null : uploadSubcategorySelect.value,
+                    tags: [...selectedTags],
+                    date: new Date().toISOString().split('T')[0],
+                    notes: ''
+                };
+                
+                if (activeType === 'web') {
+                    const url = document.getElementById('upload-url').value.trim();
+                    if (!url) return;
+                    newMaterial.url = url;
+                    
+                    // 处理图标上传
+                    if (iconUploadInput.files.length > 0) {
+                        // 在实际应用中，这里应该上传文件到服务器
+                        newMaterial.iconUrl = iconPreview.src || 'https://cdn-icons-png.flaticon.com/512/2965/2965279.png';
+                        newMaterial.thumbnail = iconPreview.src || 'https://cdn-icons-png.flaticon.com/512/2965/2965279.png';
+                    } else {
+                        newMaterial.iconUrl = 'https://cdn-icons-png.flaticon.com/512/2965/2965279.png';
+                        newMaterial.thumbnail = 'https://cdn-icons-png.flaticon.com/512/2965/2965279.png';
+                    }
+                } else if (activeType === 'image') {
+                    const fileInput = document.getElementById('upload-file');
+                    if (fileInput.files.length === 0) return;
+                    
+                    // 在实际应用中，这里应该上传文件到服务器
+                    // 这里我们只是模拟上传，使用Data URL
+                    newMaterial.thumbnail = uploadImagePreview.src || 'https://images.unsplash.com/photo-1505506874110-6a7a69069a08?auto=format&fit=crop&w=300&q=80';
+                    
+                    // 保存网站链接
+                    const websiteUrl = websiteUrlInput.value.trim();
+                    if (websiteUrl) {
+                        newMaterial.websiteUrl = websiteUrl;
+                    }
+                } else {
+                    // 文档类型
+                    newMaterial.thumbnail = 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=300&q=80';
+                }
+                
+                materials.unshift(newMaterial);
+                renderMaterials();
+                uploadModal.style.display = 'none';
+                resetUploadForm();
+            });
+            
+            uploadModalCancel.addEventListener('click', () => {
+                uploadModal.style.display = 'none';
+                resetUploadForm();
+            });
+            
+            uploadModalClose.addEventListener('click', () => {
+                uploadModal.style.display = 'none';
+                resetUploadForm();
+            });
+            
+            // 详情模态框
+            detailSaveBtn.addEventListener('click', () => {
+                const material = materials.find(m => m.id === currentMaterialId);
+                if (material) {
+                    material.title = detailTitleInput.value.trim();
+                    material.desc = detailDescInput.value.trim();
+                    material.notes = detailNotesInput.value.trim();
+                    material.category = detailCategorySelect.value;
+                    material.subcategory = detailSubcategorySelect.value === '' ? null : detailSubcategorySelect.value;
+                    
+                    // 更新图片
+                    if (material.type === 'image' && newImageFile) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            material.thumbnail = event.target.result;
+                            renderMaterials();
+                        };
+                        reader.readAsDataURL(newImageFile);
+                    }
+                    
+                    // 更新网站链接
+                    if (material.type === 'image') {
+                        const websiteUrl = detailWebsiteUrl.href;
+                        if (websiteUrl) {
+                            material.websiteUrl = websiteUrl;
+                        }
+                    }
+                    
+                    // 更新图标
+                    if (material.type === 'web' && newIconFile) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            material.iconUrl = event.target.result;
+                            material.thumbnail = event.target.result;
+                            renderMaterials();
+                        };
+                        reader.readAsDataURL(newIconFile);
+                    }
+                    
+                    renderMaterials();
+                    detailModal.style.display = 'none';
+                }
+            });
+            
+            detailCancelBtn.addEventListener('click', () => {
+                detailModal.style.display = 'none';
+            });
+            
+            detailModalClose.addEventListener('click', () => {
+                detailModal.style.display = 'none';
+            });
+            
+            detailDeleteBtn.addEventListener('click', () => {
+                if (confirm('确定要删除这个素材吗？')) {
+                    materials = materials.filter(m => m.id !== currentMaterialId);
+                    renderMaterials();
+                    detailModal.style.display = 'none';
+                }
+            });
+            
+            // 素材点击事件
+            gridViewEl.addEventListener('click', (e) => {
+                const gridItem = e.target.closest('.grid-item');
+                if (gridItem) {
+                    openMaterialDetail(gridItem.dataset.id);
+                }
+            });
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                if (e.target === categoryModal) {
+                    categoryModal.style.display = 'none';
+                }
+                if (e.target === uploadModal) {
+                    uploadModal.style.display = 'none';
+                    resetUploadForm();
+                }
+                if (e.target === detailModal) {
+                    detailModal.style.display = 'none';
+                }
+            });
+        }
+
+        // 打开上传模态框
+        function openUploadModal() {
+            uploadModal.style.display = 'flex';
+            
+            // 重置类型选择器
+            document.querySelectorAll('.type-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector('.type-option[data-type="image"]').classList.add('active');
+            
+            // 重置表单区域
+            uploadFileGroup.style.display = 'block';
+            uploadUrlGroup.style.display = 'none';
+            linkPreviewEl.style.display = 'none';
+            
+            // 重置表单字段
+            document.getElementById('upload-title').value = '';
+            document.getElementById('upload-desc').value = '';
+            document.getElementById('upload-url').value = '';
+            document.getElementById('upload-file').value = '';
+            uploadImagePreview.src = '';
+            uploadImagePreview.style.display = 'none';
+            changeImageBtn.style.display = 'none';
+            websiteUrlInput.value = '';
+            iconUploadInput.value = '';
+            iconPreview.src = '';
+            iconPreview.style.display = 'none';
+            
+            // 设置默认分类
+            uploadCategorySelect.value = selectedCategory || categories[0].id;
+            updateSubcategorySelect(uploadCategorySelect, uploadSubcategorySelect, selectedSubcategory);
+            
+            // 渲染标签
+            renderUploadTags();
+        }
+
+        // 重置上传表单
+        function resetUploadForm() {
+            // 重置类型选择器
+            document.querySelectorAll('.type-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector('.type-option[data-type="image"]').classList.add('active');
+            
+            // 重置表单区域
+            uploadFileGroup.style.display = 'block';
+            uploadUrlGroup.style.display = 'none';
+            linkPreviewEl.style.display = 'none';
+            
+            // 重置表单字段
+            document.getElementById('upload-title').value = '';
+            document.getElementById('upload-desc').value = '';
+            document.getElementById('upload-url').value = '';
+            document.getElementById('upload-file').value = '';
+            uploadImagePreview.src = '';
+            uploadImagePreview.style.display = 'none';
+            changeImageBtn.style.display = 'none';
+            websiteUrlInput.value = '';
+            iconUploadInput.value = '';
+            iconPreview.src = '';
+            iconPreview.style.display = 'none';
+        }
+
+        // 初始化页面
+        init();
+    </script>
+</body>
 </html>
